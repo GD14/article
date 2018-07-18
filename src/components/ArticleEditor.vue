@@ -1,15 +1,29 @@
 <template>
     <div id="article-editor">
-        <input type="text" class="form-control" v-bind:value="articleTitle">
+        <input type="text" class="form-control" v-bind:value="articleTitle" v-on:input="editTitle">
         <ul></ul>
-        <textarea class="form-control"></textarea>
+        <textarea v-bind:value="articleContent" v-on:input="editArticle" class="form-control"></textarea>
     </div>
 </template>
 <script>
     export default {
         computed:{
             articleTitle(){
-                return "数学";
+                return this.$store.getters.activeArticle.title;
+            },
+            articleContent(){
+                console.log("content");
+                
+                return this.$store.getters.activeArticle.content;
+            }
+        },
+        methods:{
+            editTitle(e){
+                this.$store.dispatch("editTitle",e.target.value)
+            },
+            editArticle(e){
+                console.log(e.target.value);
+                this.$store.dispatch("editArticle",e.target.value)
             }
         }
     }
