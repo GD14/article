@@ -20,31 +20,36 @@ export default {
     data() {
         return {}
     },
+
     computed: {
         Articles() {
             return this.$store.getters.articles
         },
         activeArticle() {
             return this.$store.getters.activeArticle
+        },
+        activeDir() {
+            return this.$store.getters.activeDir
+        },
+        articlesMap(){
+            return this.$store.getters.articlesMap
         }
     },
     methods: {
         addOne() {
-            console.log('xx')
-
             this.$store.dispatch('addArticle')
         },
+        getArticle(dirId) {
+            this.$store.dispatch('getArticle()')
+        },
         showArticle(article) {
-            this.$http.get('apis/notes/' + article.id + '/content').then(
-                res => {
-                    let contentResult = res.data.data
-                    article.content=contentResult.content
-                    this.$store.dispatch('showCurrentArticle', article)
-                },
-                err => {
-                    console.log('dsf')
-                }
-            )
+            this.$store.dispatch('getContent', article)
+        }
+    },
+    watch: {
+        activeDir: function(val, oldVal) {
+            
+            this.$store.dispatch('getArticle', {'dirId':val.id,'articlesMap':this.articlesMap})
         }
     }
 }

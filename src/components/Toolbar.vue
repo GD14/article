@@ -24,50 +24,15 @@ export default {
             return this.$store.getters.activeDir
         }
     },
+    mounted() {
+      this.$store.dispatch('getDirs')
+    },
     methods: {
         addOne() {
-            // this.$http.get('apis/dir/1').then(
-            //     res => {
-            //         console.log(res, '请求成功')
-            //     },
-            //     err => {
-            //         console.log(err, '请求失败')
-            //     }
-            // )
-
             this.$store.dispatch('addDirs')
         },
         setCurrentDir(dir) {
             this.$store.dispatch('showCurrentDirectory', dir)
-            this.$http.get('apis/notebooks/' + dir.id + '/notes').then(
-                res => {
-                    let notesResult = res.data
-                    let articles = notesResult.data
-                    let activeArticle = articles[0]
-                    this.$store.dispatch('setArticles', articles)
-                    this.$store.dispatch('showCurrentArticle', activeArticle)
-                    console.log(!articles.content);
-                    console.log(activeArticle);
-                    
-                    if (!activeArticle.content) {
-                        this.$http
-                            .get('apis/notes/' + activeArticle.id + '/content')
-                            .then(
-                                res => {
-                                    
-                                    let contentResult = res.data.data
-                             
-                                    
-                                    this.$store.dispatch('editArticle',contentResult.content);
-                                },
-                                err => {
-                                    console.log('dsf')
-                                }
-                            )
-                    }
-                },
-                err => {}
-            )
         }
     }
 }

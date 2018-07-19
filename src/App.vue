@@ -1,9 +1,9 @@
 <template>
-  <div id="app">
-    <toolbar></toolbar>
-    <article-list></article-list>
-    <article-editor></article-editor>
-  </div>
+    <div id="app">
+        <toolbar></toolbar>
+        <article-list></article-list>
+        <article-editor></article-editor>
+    </div>
 </template>
 <script>
 import Toolbar from '@/components/Toolbar'
@@ -15,29 +15,6 @@ export default {
         Toolbar,
         ArticleList,
         ArticleEditor
-    },
-    beforeCreate() {
-        this.$http.get('apis/notebooks').then(
-            res => {
-                let result = res.data
-                this.$store.dispatch('setDirs', result.data)
-                let activeDir = result.data[0]
-                this.$store.dispatch('showCurrentDirectory', activeDir)
-                this.$http.get('apis/notebooks/' + activeDir.id + '/notes').then(
-                    res => {
-                        let notesResult=res.data
-                        let articles=notesResult.data;
-                        let activeArticle=articles[0];
-                        this.$store.dispatch('setArticles',articles);
-                        this.$store.dispatch('showCurrentArticle',activeArticle);
-                    },
-                    err => {}
-                )
-            },
-            err => {
-                console.log(err, '请求失败')
-            }
-        )
     }
 }
 </script>
