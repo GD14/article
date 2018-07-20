@@ -37,7 +37,7 @@ export default {
     },
     methods: {
         addOne() {
-            this.$store.dispatch('addArticle')
+            this.$store.dispatch('addArticle',this.activeDir.id)
         },
         getArticle(dirId) {
             this.$store.dispatch('getArticle()')

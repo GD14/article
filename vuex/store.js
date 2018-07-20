@@ -31,12 +31,7 @@ const mutations = {
     state.activeDir = newDirs
   },
   //新增文章
-  ADD_ARTICLE(state) {
-    const newArticle = {
-      id: 1,
-      title: 'new article',
-      content: ''
-    }
+  ADD_ARTICLE(state,newArticle) {
     state.articles.push(newArticle)
     state.activeArticle = newArticle
   },
@@ -83,8 +78,19 @@ const mutations = {
 }
 
 const actions = {
-  addArticle({ commit }) {
-    commit('ADD_ARTICLE')
+  addArticle({ commit }, dirId) {
+    const newArticle = {
+      dirId: dirId,
+      title: 'new article'
+    }
+    axios.post('/apis/notes', newArticle).then(
+      res => {
+        
+        console.log(res)
+      },
+      err => {}
+    )
+    //commit('ADD_ARTICLE')
   },
   editArticle({ commit }, content) {
     commit('EDIT_ARTICLE', content)
