@@ -13,7 +13,7 @@
                             <li class="editChoiceItem">
                                 <i class='glyphicon glyphicon-edit'></i>修改目录
                             </li>
-                            <li class="editChoiceItem">
+                            <li class="editChoiceItem" v-on:click="setTryToDelDir">
                                 <i class='glyphicon glyphicon-trash'></i>删除目录
                             </li>
                         </ul>
@@ -22,14 +22,20 @@
                 <span>{{ item.name}}</span>
             </li>
         </ul>
+        <del-dialog v-if="tryToDelDir" v-bind:msg="currentDir.name" v-on:onConfirmBtn="delDir"></del-dialog>
     </div>
 </template>
 <script>
+import DelDialog from '@/components/DelDialog'
 export default {
     data() {
         return {
-            clickEditDir:false
+            clickEditDir:false,
+            tryToDelDir:false
         }
+    },
+    components:{
+        DelDialog
     },
     computed: {
         dirs() {
@@ -51,6 +57,15 @@ export default {
         },
         setEditDir(){
             this.clickEditDir=!this.clickEditDir
+        },
+        setTryToDelDir(){
+            this.clickEditDir=false;
+            this.tryToDelDir=!this.tryToDelDir
+        },
+        delDir(){
+            this.tryToDelDir=false;
+            console.log("dsfds");
+            
         }
     }
 }

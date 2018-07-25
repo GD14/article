@@ -14,7 +14,7 @@ export default {
     components: {
         Toolbar,
         ArticleList,
-        ArticleEditor
+        ArticleEditor,
     }
 }
 </script>
