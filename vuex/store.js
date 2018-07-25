@@ -23,23 +23,19 @@ const state = {
 
 const mutations = {
   //新增目录
-  ADD_DIR(state) {
-    const newDirs = {
-      name: 'xxx'
-    }
-    state.directories.push(newDirs)
-    state.activeDir = newDirs
+  ADD_DIR(state, newDir) {
+    state.directories.push(newDir)
+    state.activeDir = newDir
   },
   //新增文章
-  ADD_ARTICLE(state,newArticle) {
+  ADD_ARTICLE(state, newArticle) {
     state.articles.push(newArticle)
     state.activeArticle = newArticle
   },
   //编辑文章
-  EDIT_ARTICLE(state, content) {
-    console.log(state.activeArticle.content)
-    state.activeArticle.content = content
-    console.log(state.activeArticle.content)
+  EDIT_ARTICLE(state, article) {
+    state.activeArticle.title = article.title
+    state.activeArticle.content =article.content
   },
   //编辑title
   EDIT_TITLE(state, title) {
@@ -66,14 +62,6 @@ const mutations = {
     let dirId = payload.dirId
     let articles = payload.articles
     state.articlesMap.set(dirId, articles)
-  },
-  SET_HAS_ACTIVE_DIR(state, flag) {
-    state.hasActiveDir = flag
-  },
-  SET_HAS_ACTIVE_ARTICLE(state, flag) {
-    console.log('0')
-
-    state.hasActiveArticle = flag
   }
 }
 
@@ -85,21 +73,28 @@ const actions = {
     }
     axios.post('/apis/notes', newArticle).then(
       res => {
-        
-        console.log(res)
+        let article = res.data.data
+        article.content = ''
+        commit('ADD_ARTICLE', article)
       },
       err => {}
     )
-    //commit('ADD_ARTICLE')
   },
-  editArticle({ commit }, content) {
-    commit('EDIT_ARTICLE', content)
-  },
-  editTitle({ commit }, title) {
-    commit('EDIT_TITLE', title)
+  editArticle({ commit }, article) {
+    commit('EDIT_ARTICLE', article)
+    axios.put('/apis/notes/' + article.id, article).then(res => {}, err => {})
   },
   addDirs({ commit }) {
-    commit('ADD_DIR')
+    const newDir = {
+      name: 'new dir'
+    }
+    axios.post('/apis/notebooks', newDir).then(
+      res => {
+        let dir = res.data.data
+        commit('ADD_DIR', dir)
+      },
+      err => {}
+    )
   },
   showCurrentArticle({ commit }, article) {
     commit('SET_CURRENT_ARTICLE', article)
@@ -119,7 +114,6 @@ const actions = {
         let dirs = res.data.data
         commit('SET_DIRS', dirs)
         commit('SET_CURRENT_DIR', dirs[0])
-        commit('SET_HAS_ACTIVE_DIR', true)
       },
       err => {}
     )
@@ -131,30 +125,34 @@ const actions = {
       axios.get('/apis/notebooks/' + dirId + '/notes').then(
         res => {
           let articles = res.data.data
+          if (!articles) articles = []
           articles.forEach(element => {
             element.content = ''
           })
+
           commit('SET_TOT_ARTICLES', { dirId: dirId, articles: articles })
           commit('SET_ARTICLES', articles)
-          commit('SET_CURRENT_ARTICLE', articles[0])
-          commit('SET_HAS_ACTIVE_ARTICLE', true)
+          if (articles.length == 0) commit('SET_CURRENT_ARTICLE', {})
+          else commit('SET_CURRENT_ARTICLE', articles[0])
         },
         err => {}
       )
     } else {
       let articles = articlesMap.get(dirId)
       commit('SET_ARTICLES', articles)
-
-      commit('SET_CURRENT_ARTICLE', articles[0])
+      if (articles.length == 0) commit('SET_CURRENT_ARTICLE', {})
+      else commit('SET_CURRENT_ARTICLE', articles[0])
     }
   },
   getContent({ commit }, article) {
     if (article.content == '') {
       axios.get('/apis/notes/' + article.id + '/content').then(
         res => {
-          let myContent = res.data.data.content
-          article.content = myContent
-          commit('SET_CURRENT_ARTICLE', article)
+          if (res.data.data) {
+            let myContent = res.data.data.content
+            article.content = myContent
+            commit('SET_CURRENT_ARTICLE', article)
+          }
         },
         err => {}
       )

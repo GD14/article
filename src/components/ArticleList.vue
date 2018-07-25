@@ -57,7 +57,7 @@ export default {
 <style>
 #article-list {
     float: left;
-    width: 300px;
+    width: 30%;
     height: 100%;
     background-color: #f5f5f5;
     font-family: 'Raleway', sans-serif;
