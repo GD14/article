@@ -52,6 +52,8 @@ export default {
     },
     watch: {
         activeArticle: function(val, oldVal) {
+            console.log('in watching')
+            
             if (val.content == '') this.$store.dispatch('getContent', val)
         }
     }

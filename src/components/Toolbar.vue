@@ -1,5 +1,8 @@
 <template>
     <div id='toolbar'>
+        <div class="tool-head">
+            <a href="">回首页</a>
+        </div>
         <div class="newDir">
             <i class="glyphicon glyphicon-plus"></i>
             <span v-on:click="addOne">新建分类</span>
@@ -71,6 +74,20 @@ export default {
 }
 </script>
 <style>
+.tool-head{
+    padding: 30px 18px 5px ;
+    text-align: center;
+}
+.tool-head a {
+    display: block;
+    font-size: 15px;
+    padding: 9px 0;
+    color: #ce7259;
+    border: 1px solid rgba(236, 114, 89, 8);
+    border-radius: 20px;
+    transition: border-color .2s ease-in;
+
+}
 #toolbar {
     position: relative;
     height: 100%;
@@ -98,8 +115,11 @@ export default {
     padding: 0 15px;
     cursor: pointer;
 }
+.dirItem:hover{
+    background-color: #666;
+}
 .activeDir {
-    background-color: #337ab7;
+    background-color: #666;
     border-left: 3px solid #ce7259;
 }
 .normalDir {

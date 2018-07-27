@@ -18,7 +18,7 @@ const state = {
   },
   articlesMap: new Map(),
   hasActiveDir: false,
-  hasActiveArticle: false
+  clickEditDir: false
 }
 
 const mutations = {
@@ -35,7 +35,7 @@ const mutations = {
   //编辑文章
   EDIT_ARTICLE(state, article) {
     state.activeArticle.title = article.title
-    state.activeArticle.content =article.content
+    state.activeArticle.content = article.content
   },
   //编辑title
   EDIT_TITLE(state, title) {
@@ -128,6 +128,7 @@ const actions = {
           if (!articles) articles = []
           articles.forEach(element => {
             element.content = ''
+            element.firstLoad = 0
           })
 
           commit('SET_TOT_ARTICLES', { dirId: dirId, articles: articles })
@@ -145,20 +146,20 @@ const actions = {
     }
   },
   getContent({ commit }, article) {
-    if (article.content == '') {
+    if (article.firstLoad == 0) {
+      article.firstLoad = 1
       axios.get('/apis/notes/' + article.id + '/content').then(
         res => {
           if (res.data.data) {
             let myContent = res.data.data.content
             article.content = myContent
-            commit('SET_CURRENT_ARTICLE', article)
           }
         },
         err => {}
       )
     } else {
-      commit('SET_CURRENT_ARTICLE', article)
     }
+            commit('SET_CURRENT_ARTICLE', article)
   }
 }
 
